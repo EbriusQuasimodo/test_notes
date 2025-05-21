@@ -1,66 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:test_todo/data/isar_database.dart';
+import 'package:test_todo/data/note_repository_impl.dart';
+import 'package:test_todo/domain/notes_repository.dart';
+import 'package:test_todo/presentation/notes_list/bloc/notes_bloc.dart';
+import 'package:test_todo/presentation/notes_list/notes_list_view.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final isarDatabase = IsarDatabase();
+  await isarDatabase.init();
+  NoteRepository noteRepository = NoteRepositoryImpl(
+    isarDatabase: isarDatabase,
+  );
+  initializeDateFormatting();
+  runApp(MyApp(noteRepository: noteRepository));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
+  final NoteRepository noteRepository;
+  const MyApp({super.key, required this.noteRepository});
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
+    return BlocProvider(
+      create:
+          (_) =>
+              NotesBloc(noteRepository: noteRepository)
+                ..add(LoadNotes(sortDesc: true)),
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
+      child: MaterialApp(
+        title: 'Flutter Notes',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+        home: NoteListScreen(noteRepository: noteRepository),
       ),
     );
   }

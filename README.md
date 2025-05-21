@@ -1,16 +1,17 @@
-# test_todo
-
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Функциональные возможности
+- Создание, редактирование и удаление заметок
+- Поиск заметок по названию
+- Сортировка заметок по дате создания (по возрастанию/убыванию)
+## Архитектура
+Проект построен с использованием следующих архитектурных подходов и паттернов:
+### Clean Architecture
+- Domain layer: содержит бизнес-логику и основные сущности (`note_entity.dart`)
+- Data layer: реализует хранение данных с использованием Isar (`note_repository_impl.dart`, `note_dto.dart`)
+- Presentation layer: UI компоненты и управление состоянием с использованием BLoC
+### State Management
+- BLoC для управления состоянием
+## Установка и запуск
+1. Убедитесь, что у вас установлен Flutter SDK версии ^3.7.0
+2. Клонируйте репозиторий
+3. Установите зависимости
+4. Запустите приложение
